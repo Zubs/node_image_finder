@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const boxen = require('boxen');
 const yargs = require('yargs');
 const axios = require('axios');
+const terminalLink = require('terminal-link');
 
 // Require api to get images
 const fetch = require('node-fetch');
@@ -49,6 +50,10 @@ unsplash.search.photos(options.search, 1, 5, { orientation: "portrait" })
   .then(res => res.json())
   .then(res => {
   	for (var i = 0; i < res.results.length; i++) {
-  		console.log(res.results[i].urls.full);
+  		let link = terminalLink(res.results[i].alt_description, res.results[i].urls.full);
+  		console.log(`${link}.\nDownload: ${res.results[i].links.download}`);
   	};
+  	// console.log(res.results)
   });
+
+  // terminalLink('My Website', 'https://sindresorhus.com') terminalLink(, res.results[i].urls.full)
