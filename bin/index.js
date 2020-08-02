@@ -14,9 +14,9 @@ const Unsplash = require('unsplash-js').default;
 
 // Unsplash secrets
 const accessKey = "EDj4JRAKSNFoiMPql56IILacsbCl8tyrGSxLWh50IXc";
-const secretKey = "JYUR6LB0uVhEHPPS2xFB0ZBSLcWmB6xPJ9QurzQOQ5U";
+const secret = "JYUR6LB0uVhEHPPS2xFB0ZBSLcWmB6xPJ9QurzQOQ5U";
 
-const unsplash = new Unsplash({ accessKey });
+const unsplash = new Unsplash({ accessKey, secret });
 
 const options = yargs
 	.usage("Usage: -s <search>")
@@ -44,28 +44,11 @@ console.log(msgBox);
 
 console.log(`Your Search For ${options.search} returned: `);
 
-const url = ``;
-
-console.log(url);
-
 unsplash.search.photos(options.search, 1, 5, { orientation: "portrait" })
   // .then(toJson)
-  // .then(json => {
-  //   console.log(json);
-  // })
+  .then(res => res.json())
   .then(res => {
-  	console.log(res.url);
-  })
-
-// axios.get(url, {
-// 	headers: {
-// 		Accept: "application/json"
-// 	}
-// })
-// .then(res => {
-// 	console.log(res.data);
-// });
-
-// for (var i = 0; i <= Things.length; i++) {
-// 	console.log(Things[i]);
-// };
+  	for (var i = 0; i < res.results.length; i++) {
+  		console.log(res.results[i].urls.full);
+  	};
+  });
