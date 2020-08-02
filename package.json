@@ -1,5 +1,5 @@
 {
-  "name": "node_cli",
+  "name": "zubs_node_cli",
   "version": "1.0.0",
   "description": "My first cli tool as a dev",
   "main": "bin/index.js",
@@ -11,6 +11,7 @@
   "bin": {
     "zubs": "./bin/index.js"
   },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "dependencies": {
     "axios": "^0.19.2",
     "boxen": "^4.2.0",

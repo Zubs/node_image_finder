@@ -50,10 +50,8 @@ unsplash.search.photos(options.search, 1, 5, { orientation: "portrait" })
   .then(res => res.json())
   .then(res => {
   	for (var i = 0; i < res.results.length; i++) {
-  		let link = terminalLink(res.results[i].alt_description, res.results[i].urls.full);
-  		console.log(`${link}.\nDownload: ${res.results[i].links.download}`);
+  		let link = terminalLink(chalk.red.bold(res.results[i].alt_description), res.results[i].urls.full);
+  		let downloadLink = terminalLink(chalk.yellow.bold('Download'), res.results[i].links.download)
+  		console.log(`${link}.\t${downloadLink}`);
   	};
-  	// console.log(res.results)
   });
-
-  // terminalLink('My Website', 'https://sindresorhus.com') terminalLink(, res.results[i].urls.full)
