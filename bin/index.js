@@ -1,31 +1,32 @@
 #!/usr/bin/env node
 
-// Require Packages
 const chalk = require('chalk');
 const boxen = require('boxen');
 const yargs = require('yargs');
-const axios = require('axios');
 const terminalLink = require('terminal-link');
-
-// Require api to get images
 const fetch = require('node-fetch');
+const Unsplash = require('unsplash-js');
+require('dotenv').config();
+
 global.fetch = fetch;
 
-const Unsplash = require('unsplash-js').default;
-
-// Unsplash secrets
-const accessKey = "EDj4JRAKSNFoiMPql56IILacsbCl8tyrGSxLWh50IXc";
-const secret = "JYUR6LB0uVhEHPPS2xFB0ZBSLcWmB6xPJ9QurzQOQ5U";
-
-const unsplash = new Unsplash({ accessKey, secret });
+const unsplash = Unsplash.createApi({ accessKey: process.env.UNSPLASH_ACCESS_KEY });
 
 const options = yargs
-	.usage("Usage: -s <search>")
+	.usage("Usage: -s <search> -o <orientation>")
 	.option("s", {
 		alias: "search",
 		describe: "Search Parameter",
 		type: "string",
 		demandOption: true
+	})
+	.option("o", {
+		alias: "orientation",
+		describe: "Image Orientation",
+		type: "string",
+		demandOption: false,
+		default: "portrait",
+		choices: ["landscape", "portrait", "squarish"]
 	})
 	.argv;
 
@@ -36,7 +37,7 @@ const boxenOptions = {
 	margin: 1,
 	borderStyle: "round",
 	borderColor: "green",
-	backgroundColor: "#123456"
+	backgroundColor: "#f2f2f2"
 };
 
 const msgBox = boxen(greeting, boxenOptions);
@@ -45,13 +46,15 @@ console.log(msgBox);
 
 console.log(`Your Search For ${options.search} returned: `);
 
-unsplash.search.photos(options.search, 1, 5, { orientation: "portrait" })
-  // .then(toJson)
-  .then(res => res.json())
+unsplash.search.getPhotos({ query: options.search, page: 1, perPage: 10, orientation: options.orientation })
   .then(res => {
-  	for (var i = 0; i < res.results.length; i++) {
-  		let link = terminalLink(chalk.red.bold(res.results[i].alt_description), res.results[i].urls.full);
-  		let downloadLink = terminalLink(chalk.yellow.bold('Download'), res.results[i].links.download)
-  		console.log(`${link}.\t${downloadLink}`);
-  	};
-  });
+	  if (res.type === 'success') {
+			for (let i = 0; i < res.response.results.length; i++) {
+				let link = terminalLink(chalk.red.bold(res.response.results[i].alt_description), res.response.results[i].urls.full);
+				let downloadLink = terminalLink(chalk.yellow.bold('Download'), res.response.results[i].links.download)
+				console.log(`${link}.\t${downloadLink}`);
+			}
+	  } else {
+		  console.log(chalk.red.bold('An error occurred while fetching images'));
+	  }
+  })
